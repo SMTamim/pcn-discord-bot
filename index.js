@@ -52,7 +52,7 @@ client.on('interactionCreate', async interaction => {
         const msgCount = await helpers.fetchAllMessages(channel);
         await interaction.reply(`The channel ${channel.name} has total ${msgCount.length} messages.`);
     }
-    if (interaction.commandName === 'cc') {
+    if (interaction.commandName === 'clr') {
         const deleteCount = interaction.options.get('number') ? parseInt(interaction.options.get('number').value) + 1 : 'all';
         console.log(deleteCount);
         const channel = client.channels.cache.get(interaction.channelId);

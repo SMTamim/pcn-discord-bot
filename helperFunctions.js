@@ -16,13 +16,14 @@ function messageHandler(message) {
         sendMessage(message, "I'm good! What about you?");
     }
     if (message.author.username === 'Angry〆Mental') {
-        constructImage(message.author.username);
-        const attachments = new MessageAttachment('./test.png');
-        console.log(attachments);
-        message.channel.send({
-            files: [attachments],
-            content: `Hello`
-        });
+        console.log(message.author.avatarURL({ 'format': 'png', 'size': 256 }));
+        // constructImage(message.author.username);
+        // const attachments = new MessageAttachment('./test.png');
+        // console.log(attachments);
+        // message.channel.send({
+        //     files: [attachments],
+        //     content: `Hello`
+        // });
     }
 }
 
