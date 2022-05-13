@@ -16,6 +16,12 @@ async function constructImage(memberName) {
             // Draw Banner Image
             context.drawImage(image, 0, 0, width, height);
 
+            const text1 = 'WELCOME'
+            context.font = 'bold 40px "Calibri"';
+            const text1Width = canvas.context.measureText(text1).width;
+            context.fillStyle = 'goldenrod';
+            context.fillText(text1, parseInt((width - text1Width) / 2), 100);
+
             // Draw the circle of avatar
             context.beginPath();
             const centerX = parseInt(width / 2);
@@ -39,7 +45,8 @@ async function constructImage(memberName) {
             const output = canvas.toBuffer();
 
             // Styling of the text under the avatar circle
-            context.font = 'bold 60px "Fira Code"';
+            registerFont('./assets/fonts/code2000.ttf', { family: 'CODE2000' })
+            context.font = 'bold 60px "CODE2000"';
             context.textAlign = 'left';
             context.textBaseline = 'top';
             const text = memberName;
@@ -50,9 +57,9 @@ async function constructImage(memberName) {
 
             context.fillStyle = 'red';
             context.font = 'bold 50px Candara';
-            const greetingText = 'Have a great journey!'
+            const greetingText = 'Have a great journey!'.toUpperCase();
             const greetingWidth = context.measureText(greetingText).width;
-            context.fillText(greetingText, parseInt((width - greetingWidth) / 2), 380);
+            context.fillText(greetingText, parseInt((width - greetingWidth) / 2), 385);
 
             const buffer = canvas.toBuffer('image/png');
             try {
@@ -67,8 +74,9 @@ async function constructImage(memberName) {
 
     });
 }
-
-constructImage('Tamim〆')
+let someEncodedString = Buffer.from('Tamim〆', 'utf-8').toString();
+console.log(someEncodedString);
+constructImage(someEncodedString);
 
 
 // const textWidth = context.measureText(text).width

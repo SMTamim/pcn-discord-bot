@@ -1,6 +1,8 @@
 const { MessageAttachment } = require('discord.js');
 const fs = require('fs');
-const { createCanvas, loadImage } = require('canvas');
+const { registerFont, createCanvas, loadImage } = require('canvas');
+
+const colors = ['#00FFFF', '#800080', '#FF00FF', '#fff', '#FFFF00', '#00FF00', '#FFA500',];
 
 function sendMessage(msgObj, message) {
     msgObj.reply(message)
@@ -15,15 +17,10 @@ function messageHandler(message) {
         message.react('❤️');
         sendMessage(message, "I'm good! What about you?");
     }
-    if (message.author.username === 'Angry〆Mental') {
-        console.log(message.author.avatarURL({ 'format': 'png', 'size': 256 }));
-        // constructImage(message.author.username);
-        // const attachments = new MessageAttachment('./test.png');
-        // console.log(attachments);
-        // message.channel.send({
-        //     files: [attachments],
-        //     content: `Hello`
-        // });
+    if (message.author.username === 'Angry〆Mental' || message.author.username === '!    HiddenFigure🔆') {
+        //console.log(message.author.avatarURL({ 'format': 'png', 'size': 256 }));
+        constructImageAndSend(message.author, message.channel);
+
     }
 }
 
@@ -70,52 +67,121 @@ function handleMemberAdd(member) {
         console.log('Channel not found.');
         return;
     }
-    const memberName = member.user.username;
-    constructImage(memberName);
-    const attachments = new MessageAttachment('test.png');
-
-    channel.send({
-        files: [attachments],
-        content: `Hey ${member}, \nWelcome to **PCN Discord Server**`
-    });
+    // console.log(member.user);
+    constructImageAndSend(member.user, channel);
 
 }
 
+function handleMemberRemove(member) {
+    const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
+    if (!channel) {
+        console.log('Channel not found.');
+        return;
+    }
+    // console.log(member.user);
+    constructImageAndSend(member.user, channel, 'Goodbye', 'We\'ll mis you 😥');
+}
 
-function constructImage(memberName) {
 
-    const img = loadImage('./img.png').then(
-        image => {
+async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagline = "Have a great journey!") {
+    const banners = fs.readdirSync('./assets/images/wc-banner').filter(file => file.endsWith('.png'));
+    const selectedImage = banners[parseInt(Math.random() * banners.length)];
+
+    console.log(banners, parseInt(Math.random() * banners.length));
+
+    const img = loadImage(`./assets/images/wc-banner/${selectedImage}`).then(image => {
+
+        let avatarURL = 'https://siteforsuccess.com/JS/pcn_images/discord.jpg';
+        if (memberObj.avatar) {
+            avatarURL = memberObj.avatarURL({ 'format': 'png', 'size': 256 });
+        }
+        loadImage(avatarURL).then(circleImage => {
+
+            // Register fonts
+            registerFont('./assets/fonts/code2000.ttf', { family: 'CODE2000' })
+            registerFont('./assets/fonts/Impacted2.ttf', { family: 'Impacted2' })
+
+            // Banner Image
             const width = image.width;
             const height = image.height;
 
             const canvas = createCanvas(width, height);
             const context = canvas.getContext('2d');
 
-            context.font = 'bold 80px Candara';
-            context.textAlign = 'left';
-            context.textBaseline = 'top';
-
+            // Draw Banner Image
             context.drawImage(image, 0, 0, width, height);
 
-            const text = memberName;
-            console.log(text);
-            const textWidth = context.measureText(text).width;
-            context.fillStyle = 'tomato';
-            context.fillText(text, parseInt((width - textWidth) / 2), 170);
+            context.font = 'bold 50px "Calibri"';
+            const text1Width = canvas.context.measureText(upper).width;
+            const text1col = parseInt(Math.random() * colors.length);
+            context.fillStyle = colors[text1col];
+            context.fillText(upper, parseInt((width - text1Width) / 2), 100);
+
+
+            // Styling of the text under the avatar circle
+            context.font = 'bold 40px "CODE2000"';
+            context.textAlign = 'left';
+            context.textBaseline = 'top';
+            const username = memberObj.username;
+            console.log(username);
+            const textWidth = context.measureText(username).width;
+
+            let nameTextCol = parseInt(Math.random() * colors.length);
+            while (nameTextCol == text1col) nameTextCol = parseInt(Math.random() * colors.length);
+
+            context.fillStyle = colors[nameTextCol];
+            context.fillText(username, parseInt((width - textWidth) / 2), 320);
+
+            let greetingTextCol = parseInt(Math.random() * colors.length);
+            while (greetingTextCol == nameTextCol || greetingTextCol == text1col) greetingTextCol = parseInt(Math.random() * colors.length);
+            context.fillStyle = colors[greetingTextCol];
+            context.font = 'bold 50px Impacted2';
+            const greetingWidth = context.measureText(tagline).width;
+            context.fillText(tagline, parseInt((width - greetingWidth) / 2), 370);
+
+
+            // Draw the circle of avatar
+            context.beginPath();
+            const centerX = parseInt(width / 2);
+            const centerY = parseInt(height / 2);
+            const radius = 95;
+            const startAngle = 0;
+            const endAngle = Math.PI * 2;
+            context.arc(centerX, centerY, radius, startAngle, endAngle);
+            context.closePath();
+            context.clip();
+
+            // Draw the avatar image into the circle
+            const circleImageWidth = circleImage.width;
+            const circleImageHeight = circleImage.height;
+            console.log(circleImageWidth, circleImageHeight);
+            context.drawImage(circleImage, centerX - 95, centerY - 95, circleImageWidth * .75, circleImageHeight * .75);
+
+            //Stroke of the circle
+            context.strokeStyle = "green";
+            context.lineWidth = 10;
+            context.stroke();
+
+            context.restore();
 
             const buffer = canvas.toBuffer('image/png');
             try {
                 fs.writeFileSync('./test.png', buffer);
                 console.log("Saved");
-                return 0;
+                const attachments = new MessageAttachment('./test.png');
+                console.log(attachments);
+                channel.send({
+                    files: [attachments],
+                    content: `Hello`
+                });
+                return true;
             } catch (e) {
-                console.log(e);
-                return -1;
+                return false;
             }
         }
-    );
+        )
 
+    });
 }
 
-module.exports = { sendMessage, messageHandler, fetchAllMessages, deleteMessages, handleMemberAdd }
+module.exports = { sendMessage, messageHandler, fetchAllMessages, deleteMessages, handleMemberAdd, handleMemberRemove }

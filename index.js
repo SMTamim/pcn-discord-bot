@@ -71,3 +71,4 @@ client.login(token);
 
 // Handle new member join
 client.on('guildMemberAdd', member => helpers.handleMemberAdd(member));
+client.on('guildMemberRemove', member => helpers.handleMemberRemove(member));
