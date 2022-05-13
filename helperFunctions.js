@@ -2,7 +2,7 @@ const { MessageAttachment } = require('discord.js');
 const fs = require('fs');
 const { registerFont, createCanvas, loadImage } = require('canvas');
 
-const colors = ['#00FFFF', '#800080', '#FF00FF', '#fff', '#FFFF00', '#00FF00', '#FFA500',];
+const colors = ['#00FFFF', '#FF00FF', '#fff', '#FFFF00', '#00FF00', '#FFA500',];
 
 function sendMessage(msgObj, message) {
     msgObj.reply(message)
@@ -17,7 +17,7 @@ function messageHandler(message) {
         message.react('❤️');
         sendMessage(message, "I'm good! What about you?");
     }
-    if (message.author.username === 'Angry〆Mental' || message.author.username === '!    HiddenFigure🔆') {
+    if (message.author.username === 'Angry〆Mental'/* || message.author.username === '!    HiddenFigure🔆'*/) {
         //console.log(message.author.avatarURL({ 'format': 'png', 'size': 256 }));
         constructImageAndSend(message.author, message.channel);
 
@@ -69,6 +69,7 @@ function handleMemberAdd(member) {
     }
     // console.log(member.user);
     constructImageAndSend(member.user, channel);
+    roleManager(member,"Select Your Roles",true);
 
 }
 
@@ -80,6 +81,7 @@ function handleMemberRemove(member) {
     }
     // console.log(member.user);
     constructImageAndSend(member.user, channel, 'Goodbye', 'We\'ll mis you 😥');
+    roleManager(member,"Select Your Roles",false);
 }
 
 
@@ -87,7 +89,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
     const banners = fs.readdirSync('./assets/images/wc-banner').filter(file => file.endsWith('.png'));
     const selectedImage = banners[parseInt(Math.random() * banners.length)];
 
-    console.log(banners, parseInt(Math.random() * banners.length));
+    // console.log(banners, parseInt(Math.random() * banners.length));
 
     const img = loadImage(`./assets/images/wc-banner/${selectedImage}`).then(image => {
 
@@ -123,7 +125,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             context.textAlign = 'left';
             context.textBaseline = 'top';
             const username = memberObj.username;
-            console.log(username);
+            // console.log(username);
             const textWidth = context.measureText(username).width;
 
             let nameTextCol = parseInt(Math.random() * colors.length);
@@ -154,7 +156,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             // Draw the avatar image into the circle
             const circleImageWidth = circleImage.width;
             const circleImageHeight = circleImage.height;
-            console.log(circleImageWidth, circleImageHeight);
+            // console.log(circleImageWidth, circleImageHeight);
             context.drawImage(circleImage, centerX - 95, centerY - 95, circleImageWidth * .75, circleImageHeight * .75);
 
             //Stroke of the circle
@@ -167,12 +169,16 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             const buffer = canvas.toBuffer('image/png');
             try {
                 fs.writeFileSync('./test.png', buffer);
-                console.log("Saved");
+                // console.log("Saved");
                 const attachments = new MessageAttachment('./test.png');
-                console.log(attachments);
+                // console.log(attachments);
+                let message = `Huh! ${username} has just left us`;
+                if(upper.toLowerCase() == 'welcome'){
+                    message = `For detailed guide visit <#974719552929796108>.`;
+                }
                 channel.send({
                     files: [attachments],
-                    content: `Hello`
+                    content: message
                 });
                 return true;
             } catch (e) {
@@ -183,5 +189,22 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
 
     });
 }
+
+// Adding a role while joining the server
+function roleManager(member, theRole, operation = true){
+    // operation true means add.
+    if(operation){
+        console.log("Need to add role");
+        const role = member.guild.roles.cache.find(role => role.name == theRole);
+        if(role){
+            console.log(`${member.id}`);
+            member.roles.add(role);
+            console.log("Successfully added role");
+        }
+    }else{
+        console.log("Need to remove role");
+    }
+}
+
 
 module.exports = { sendMessage, messageHandler, fetchAllMessages, deleteMessages, handleMemberAdd, handleMemberRemove }
