@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image</title>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet"
+        type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+</head>
+
+<body>
+    <!--File upload-->
+    <p style="margin:20px 0;">
+        <input type="submit" id="btChooseImage" onclick='chooseImage()' value="Select an image" />
+    </p>
+    <input type="file" id="file" onchange="showImage(this)" style="display: none; visibility: hidden; width: 1px;" />
+
+    <!--Textarea to enter some texts.-->
+    <p>
+        <textarea onkeyup='writeText(this)' id='textArea' placeholder='Enter some value for text' rows='2' cols='50'>
+    </textarea>
+    </p>
+
+    <div>
+        <!--The parent container, image and container for text (to place over the image)-->
+        <div class="mainContainer" id='mainContainer'>
+
+            <!--The default image. You can select a different image too.-->
+            <img src="img.png" id="myimage" alt="" />
+
+            <!--The text, which is also draggable.-->
+            <div id='theText' onmousedown='this.style.border = "dashed 2px #FF7F27";'>sample text</div>
+        </div>
+
+        <!--Button to save the image with the text.-->
+        <p>
+            <input type="button" onclick="saveImageWithText();" id="bt" value="Save the Image" />
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

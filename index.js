@@ -1,7 +1,28 @@
 const { Client, Intents, Collection } = require('discord.js');
 
 const { token, guildId, clientId } = require('./config.json');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
+const helpers = require('./helperFunctions.js');
+
+const client = new Client({
+    intents: [
+        'DIRECT_MESSAGES',
+        'DIRECT_MESSAGE_REACTIONS',
+        'GUILD_MESSAGES',
+        'GUILD_MESSAGE_REACTIONS',
+        'GUILDS',
+        'GUILD_MEMBERS',
+        'GUILD_BANS',
+        'GUILD_EMOJIS_AND_STICKERS',
+        'GUILD_INTEGRATIONS',
+        'GUILD_WEBHOOKS',
+        'GUILD_INVITES',
+        'GUILD_VOICE_STATES',
+        'GUILD_PRESENCES',
+        'GUILD_MESSAGE_TYPING',
+        'DIRECT_MESSAGE_TYPING',
+        'GUILD_SCHEDULED_EVENTS',
+    ]
+});
 
 // new Client({
 //     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
@@ -28,14 +49,14 @@ client.on('interactionCreate', async interaction => {
     }
     if (interaction.commandName === 'msgcount') {
         const channel = client.channels.cache.get(interaction.channelId);
-        const msgCount = await fetchAllMessages(channel);
+        const msgCount = await helpers.fetchAllMessages(channel);
         await interaction.reply(`The channel ${channel.name} has total ${msgCount.length} messages.`);
     }
     if (interaction.commandName === 'cc') {
         const deleteCount = interaction.options.get('number') ? parseInt(interaction.options.get('number').value) + 1 : 'all';
         console.log(deleteCount);
         const channel = client.channels.cache.get(interaction.channelId);
-        const size = await deleteMessages(channel, deleteCount);
+        const size = await helpers.deleteMessages(channel, deleteCount);
         interaction.reply(`Deleting ${size} messages`);
     }
 });
@@ -44,61 +65,9 @@ client.on('interactionCreate', async interaction => {
 client.on("messageCreate", (message) => {
     if (message.author.bot) return false;
     console.log(`Message from ${message.author.username}: ${message.content}`);
-    messageHandler(message);
+    helpers.messageHandler(message);
 });
 client.login(token);
 
-function sendMessage(msgObj, message) {
-    msgObj.reply(message)
-        .then(() => console.log(`Replied to message ${msgObj.content}`))
-        .catch(err => console.err);
-}
-
-function messageHandler(message) {
-    if (message.content.toLowerCase() === 'hello') {
-        sendMessage(message, `Hi @${message.author.username}`);
-    } else if (message.content.toLowerCase() === 'how are you?') {
-        message.react('❤️');
-        sendMessage(message, "I'm good! What about you?");
-    }
-    else {
-        sendMessage(message, message.content);
-    }
-}
-
-async function fetchAllMessages(channel) {
-    let messages = [];
-
-    // Create message pointer
-    let message = await channel.messages
-        .fetch({ limit: 1 })
-        .then(messagePage => (messagePage.size === 1 ? messagePage.at(0) : null));
-
-    while (message) {
-        await channel.messages
-            .fetch({ limit: 100, before: message.id })
-            .then(messagePage => {
-                messagePage.forEach(msg => messages.push(msg));
-
-                // Update our message pointer to be last message in page of messages
-                message = 0 < messagePage.size ? messagePage.at(messagePage.size - 1) : null;
-            })
-    }
-
-    console.log(messages.length);  // Print all messages
-    return messages;
-}
-
-async function deleteMessages(channel, amount) {
-    let messages;
-    if (amount != 'all')
-        messages = await channel.messages.fetch({ limit: amount });
-    else
-        messages = await fetchAllMessages(channel);
-
-
-    let { size } = messages;
-    if (!size) size = messages.length;
-    messages.forEach(msg => msg.delete());
-    return size;
-}
+// Handle new member join
+client.on('guildMemberAdd', member => helpers.handleMemberAdd(member));

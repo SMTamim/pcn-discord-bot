@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('cc')
+        .setName('clr')
         .setDescription('Deletes message!')
         .addIntegerOption(option =>
             option.setName('number')
