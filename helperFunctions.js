@@ -47,6 +47,7 @@ async function fetchAllMessages(channel) {
 }
 
 async function deleteMessages(channel, amount) {
+    console.log(channel, amount);
     let messages;
     if (amount != 'all')
         messages = await channel.messages.fetch({ limit: amount });

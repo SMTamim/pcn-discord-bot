@@ -4,9 +4,6 @@ const fs = require('node:fs');
 const { token, guildId, clientId } = require('./config.json');
 
 const commands = [{
-    name: 'ping',
-    description: 'Replies with Pong!'
-}, {
     name: 'hello',
     description: 'Replies with Hi!'
 }, {
@@ -15,9 +12,6 @@ const commands = [{
 }, {
     name: 'server',
     description: 'Gives server information',
-}, {
-    name: 'msgcount',
-    description: 'Retrieves the number of messages in which channel the command was ran.',
 },
 ];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
