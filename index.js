@@ -34,8 +34,8 @@ const client = new Client({
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setActivity("Tamim's PC! 😐", { type: 'PLAYING' });
-    client.user.setStatus('active');
+    client.user.setActivity("Muza's PC! 😐", { type: 'PLAYING' });
+    client.user.setStatus('idle');
 });
 
 
