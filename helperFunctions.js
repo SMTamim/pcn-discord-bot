@@ -18,12 +18,22 @@ function messageHandler(message) {
         sendMessage(message, "I'm good! What about you?");
     }
     if (message.author.username === 'Angry〆Mental' || message.author.username === '!    HiddenFigure🔆') {
-        return
+        if (message.content === 'addRole')
+            roleManager(message.member, "Select Your Roles", true);
+        else if (message.content === 'removeRole')
+            roleManager(message.member, 'Select Your Roles', false);
+        else if (message.content === 'constructImage')
+            constructImageAndSend(message.member.user, message.channel, 'Goodbye', 'Testing');
+        else if (message.content === 'sendMessage') {
+            const channel = message.guild.channels.cache.get('974724504825774161');
+            let msg = channel.send("HADAHSDAHDHA");
+        } else console.log(message.content);
+        return;
         console.log(message.author.avatarURL({ 'format': 'png', 'size': 256 }));
         constructImageAndSend(message.author, message.channel);
 
     }
-    if(message.author.username === 'projuktivan'){
+    if (message.author.username === 'projuktivan') {
         roleManager(message.member, "Select your roles", false);
     }
 }
@@ -50,7 +60,7 @@ async function fetchAllMessages(channel) {
 }
 
 async function deleteMessages(channel, amount) {
-    console.log(channel, amount);
+    console.log('amount', amount);
     let messages;
     if (amount != 'all')
         messages = await channel.messages.fetch({ limit: amount });
@@ -64,43 +74,53 @@ async function deleteMessages(channel, amount) {
     return size;
 }
 
-function handleMemberAdd(member) {
-    const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
-    if (!channel) {
-        console.log('Channel not found.');
-        return;
-    }
-    // console.log(member.user);
-    constructImageAndSend(member.user, channel);
-    roleManager(member, "Select Your Roles", true);
 
-}
+// function handleMemberAdd(member) {
+//     const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
+//     if (!channel) {
+//         console.log('Channel not found.');
+//         return;
+//     }
+//     constructImageAndSend(member.user, channel);
+//     roleManager(member, "Select Your Roles", true);
 
-function handleMemberRemove(member) {
-    const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
-    if (!channel) {
-        console.log('Channel not found.');
-        return;
-    }
-    // console.log(member.user);
-    constructImageAndSend(member.user, channel, 'Goodbye', 'We\'ll mis you 😥');
-    roleManager(member, "Select Your Roles", false);
-}
+// }
+
+// function handleMemberRemove(member) {
+//     const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
+//     if (!channel) {
+//         console.log('Channel not found.');
+//         return;
+//     }
+//     constructImageAndSend(member.user, channel, 'Goodbye', 'We\'ll miss you 😥');
+// }
 
 
 async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagline = "Have a great journey!") {
+
     // Retrieves all banners from wc-banner folder
     const banners = fs.readdirSync('./assets/images/wc-banner')
         .filter(file => file.endsWith('.png'));
-    const selectedImage = banners[Math.floor(Math.random() * banners.length)]; // select a banner randomly
+    // select a banner randomly
+    const selectedImage = banners[Math.floor(Math.random() * banners.length)];
 
     const img = loadImage(`./assets/images/wc-banner/${selectedImage}`).then(image => {
 
-        let avatarURL = 'https://siteforsuccess.com/JS/pcn_images/discord.jpg';     //default avatar
-        if (memberObj.avatar) {
-            avatarURL = memberObj.avatarURL({ 'format': 'png', 'size': 256 }); // get user avatar
-        }
+        //default avatar
+        let avatarURL = 'https://siteforsuccess.com/JS/pcn_images/discord.jpg';
+        if (memberObj.avatar)
+            // get user avatar
+            avatarURL = memberObj.avatarURL({ 'format': 'png', 'size': 256 });
+
         loadImage(avatarURL).then(avatarImage => {
+            // Generate 4 random color index
+            let randomColorIndex = new Set()
+            const getRandom = () => { return Math.floor(Math.random() * colors.length) };
+            randomColorIndex.add(getRandom());
+            while (randomColorIndex.size < 4) {
+                randomColorIndex.add(getRandom());
+            }
+            randomColorIndex = Array.from(randomColorIndex);
 
             // Register fonts
             registerFont('./assets/fonts/code2000.ttf', { family: 'CODE2000' })
@@ -110,6 +130,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             const width = image.width;
             const height = image.height;
 
+            // create canvas
             const canvas = createCanvas(width, height);
             const context = canvas.getContext('2d');
 
@@ -118,8 +139,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
 
             context.font = 'bold 50px "Calibri"';
             const text1Width = canvas.context.measureText(upper).width;
-            const text1col = parseInt(Math.random() * colors.length);
-            context.fillStyle = colors[text1col];
+            context.fillStyle = colors[randomColorIndex[0]];
             context.fillText(upper, parseInt((width - text1Width) / 2), 100);
 
 
@@ -131,15 +151,10 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             // console.log(username);
             const textWidth = context.measureText(username).width;
 
-            let nameTextCol = parseInt(Math.random() * colors.length);
-            while (nameTextCol == text1col) nameTextCol = parseInt(Math.random() * colors.length);
-
-            context.fillStyle = colors[nameTextCol];
+            context.fillStyle = colors[randomColorIndex[1]];
             context.fillText(username, parseInt((width - textWidth) / 2), 320);
 
-            let greetingTextCol = parseInt(Math.random() * colors.length);
-            while (greetingTextCol == nameTextCol || greetingTextCol == text1col) greetingTextCol = parseInt(Math.random() * colors.length);
-            context.fillStyle = colors[greetingTextCol];
+            context.fillStyle = colors[randomColorIndex[2]];
             context.font = 'bold 50px Impacted2';
             const greetingWidth = context.measureText(tagline).width;
             context.fillText(tagline, parseInt((width - greetingWidth) / 2), 370);
@@ -163,40 +178,37 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
             context.drawImage(avatarImage, centerX - 95, centerY - 95, avatarImageWidth * .75, avatarImageHeight * .75);
 
             //Stroke of the circle
-            context.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
+            context.strokeStyle = colors[randomColorIndex[3]];
             context.lineWidth = 12;
             context.stroke();
-
             context.restore();
 
             // the actual constructed image
             const buffer = canvas.toBuffer('image/png');
             try {
                 const filePath = './assets/images/bannerWithAvatar.png';
-                fs.writeFileSync(filePath, buffer); // save the buffer to a file
+
+                // save the buffer to a image file
+                fs.writeFileSync(filePath, buffer);
+
                 const attachments = new MessageAttachment(filePath);
                 let message = `Huh! ${username} has just left us`;
-                if (upper.toLowerCase() == 'welcome') {
-                    message = `For detailed guide visit <#974719552929796108>.`;
-                }
-                channel.send({
-                    files: [attachments],
-                    content: message
-                });
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
-        )
 
+                if (upper.toLowerCase() == 'welcome')
+                    message = `For detailed guide visit <#974719552929796108>.`;
+
+                channel.send({ files: [attachments], content: message });
+                return true;
+            }
+            catch (e) { return false; }
+        })
     });
 }
 
 // Adding a role while joining the server
-function roleManager(member, theRole, operation = true) {
-    // operation true means add.
-    if (operation) {
+function roleManager(member, theRole, addRole = true) {
+    // addRole true means add.
+    if (addRole) {
         console.log("Need to add role");
         const role = member.guild.roles.cache.find(role => role.name == theRole);
         if (role) {
@@ -206,10 +218,11 @@ function roleManager(member, theRole, operation = true) {
         }
     } else {
         console.log("Need to remove role");
-        let check = member.roles.remove([theRole]);
-        if(check) console.log(`Successfully removed ${theRole} form ${member.user.username}`);
+        const role = member.guild.roles.cache.find(role => role.name == theRole);
+        let check = member.roles.remove([role]);
+        if (check) console.log(`Successfully removed ${theRole} form ${member.user.username}`);
     }
 }
 
 
-module.exports = { sendMessage, messageHandler, fetchAllMessages, deleteMessages, handleMemberAdd, handleMemberRemove }
+module.exports = { sendMessage, messageHandler, fetchAllMessages, deleteMessages, constructImageAndSend, roleManager }

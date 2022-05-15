@@ -32,6 +32,6 @@ for (const file of eventFiles) {
 
 client.login(token);
 
-// Handle new member join
-client.on('guildMemberAdd', member => helpers.handleMemberAdd(member));
-client.on('guildMemberRemove', member => helpers.handleMemberRemove(member));
+// // Handle new member join
+// client.on('guildMemberAdd', member => helpers.handleMemberAdd(member));
+// client.on('guildMemberRemove', member => helpers.handleMemberRemove(member));
