@@ -206,19 +206,22 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
 }
 
 // Adding a role while joining the server
-function roleManager(member, theRole, addRole = true) {
+function roleManager(member, theRole, addRole = true, isId = false) {
+
+    let role = theRole;
+    if (!isId) {
+        role = member.guild.roles.cache.find(role => role.name == theRole);
+    }
     // addRole true means add.
     if (addRole) {
         console.log("Need to add role");
-        const role = member.guild.roles.cache.find(role => role.name == theRole);
         if (role) {
-            console.log(`${member}`);
+            console.log(member);
             member.roles.add(role);
             console.log("Successfully added role");
         }
     } else {
         console.log("Need to remove role");
-        const role = member.guild.roles.cache.find(role => role.name == theRole);
         let check = member.roles.remove([role]);
         if (check) console.log(`Successfully removed ${theRole} form ${member.user.username}`);
     }

@@ -5,7 +5,8 @@ const { token, guildId, clientId } = require('./config.json');
 const helpers = require('./helperFunctions.js');
 
 const client = new Client({
-    intents: 131071
+    intents: 131071,
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
 client.commands = new Collection();
@@ -31,7 +32,3 @@ for (const file of eventFiles) {
 }
 
 client.login(token);
-
-// // Handle new member join
-// client.on('guildMemberAdd', member => helpers.handleMemberAdd(member));
-// client.on('guildMemberRemove', member => helpers.handleMemberRemove(member));
