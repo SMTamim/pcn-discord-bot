@@ -23,6 +23,9 @@ function messageHandler(message) {
         constructImageAndSend(message.author, message.channel);
 
     }
+    if(message.author.username === 'projuktivan'){
+        roleManager(message.member, "Select your roles", false);
+    }
 }
 
 async function fetchAllMessages(channel) {
@@ -197,14 +200,14 @@ function roleManager(member, theRole, operation = true) {
         console.log("Need to add role");
         const role = member.guild.roles.cache.find(role => role.name == theRole);
         if (role) {
-            console.log(`${member.id}`);
+            console.log(`${member}`);
             member.roles.add(role);
             console.log("Successfully added role");
         }
     } else {
         console.log("Need to remove role");
-        member.roles.remove(theRole);
-        console.log(`Successfully removed ${theRole} form ${member.user.username}`);
+        let check = member.roles.remove([theRole]);
+        if(check) console.log(`Successfully removed ${theRole} form ${member.user.username}`);
     }
 }
 
