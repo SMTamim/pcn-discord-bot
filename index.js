@@ -1,5 +1,5 @@
-const { Client, Intents, Collection } = require('discord.js');
-
+const { Client, Intents, Collection, Permissions } = require('discord.js');
+const fs = require('fs');
 const { token, guildId, clientId } = require('./config.json');
 const helpers = require('./helperFunctions.js');
 
@@ -29,10 +29,13 @@ const client = new Client({
 //     intents: ['DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILDS']
 // });
 
+//const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setActivity("Muza's PC! 😐", { type: 'COMPETING' });
-    client.user.setStatus('idle');
+    client.user.setActivity("Tamim's PC! 😐", { type: 'PLAYING' });
+    client.user.setStatus('active');
 });
 
 
@@ -52,13 +55,23 @@ client.on('interactionCreate', async interaction => {
         const msgCount = await helpers.fetchAllMessages(channel);
         await interaction.reply(`The channel ${channel.name} has total ${msgCount.length} messages.`);
     }
-    if (interaction.commandName === 'clr') {
-        const deleteCount = interaction.options.get('number') ? parseInt(interaction.options.get('number').value) + 1 : 'all';
-        console.log(deleteCount);
-        const channel = client.channels.cache.get(interaction.channelId);
-        const size = await helpers.deleteMessages(channel, deleteCount);
-        interaction.reply(`Deleting ${size} messages`);
-    }
+    // if (interaction.commandName === 'clr') {
+    //     console.log("ROLES", interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES));
+    //     if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+    //         interaction.reply(`You don't have  the permission to delete messages`);
+    //         return
+    //     }
+    //     let deleteCount = interaction.options.get('number') ? parseInt(interaction.options.get('number').value) + 1 : 'all';
+    //     if (deleteCount === 101) deleteCount = 100;
+    //     console.log(deleteCount);
+    //     if (deleteCount > 100) {
+    //         interaction.reply("You can't delete messages more than 100. For that just say /clr");
+    //         return;
+    //     }
+    //     const channel = client.channels.cache.get(interaction.channelId);
+    //     const size = await helpers.deleteMessages(channel, deleteCount);
+    //     interaction.reply(`Deleting ${size} messages`);
+    // }
 });
 
 
