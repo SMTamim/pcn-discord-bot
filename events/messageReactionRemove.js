@@ -5,7 +5,6 @@ const { roleManager } = require("../helperFunctions");
 module.exports = {
     name: 'messageReactionRemove',
     async execute(reaction, user) {
-        const channel_id = reaction.message.channel.id;
         // When a reaction is received, check if the structure is partial
         if (reaction.partial) {
             // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
@@ -17,13 +16,15 @@ module.exports = {
                 return;
             }
         }
+        const channel_id = reaction.message.channel.id;
         const reaction1 = semester[reaction.emoji.name] ? semester[reaction.emoji.name] : section[reaction.emoji.name];
+        if (!reaction1) return;
         if (reaction1.channel !== channel_id || reaction1.message !== reaction.message.id) {
             console.log("Invalid Channel or Unknown Message!");
             return;
         };
-
-        roleManager(reaction.message.author, reaction1.role, false, true);
+        const member = await reaction.message.guild.members.fetch(user.id);
+        roleManager(member, reaction1.role, false, true);
         // Now the message has been cached and is fully available
         console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a ${reaction.emoji.name} reaction!`);
         // The reaction is now also fully available and the properties will be reflected accurately:

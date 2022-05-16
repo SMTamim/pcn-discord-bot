@@ -33,9 +33,6 @@ function messageHandler(message) {
         constructImageAndSend(message.author, message.channel);
 
     }
-    if (message.author.username === 'projuktivan') {
-        roleManager(message.member, "Select your roles", false);
-    }
 }
 
 async function fetchAllMessages(channel) {
@@ -73,27 +70,6 @@ async function deleteMessages(channel, amount) {
     messages.forEach(msg => msg.delete());
     return size;
 }
-
-
-// function handleMemberAdd(member) {
-//     const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
-//     if (!channel) {
-//         console.log('Channel not found.');
-//         return;
-//     }
-//     constructImageAndSend(member.user, channel);
-//     roleManager(member, "Select Your Roles", true);
-
-// }
-
-// function handleMemberRemove(member) {
-//     const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
-//     if (!channel) {
-//         console.log('Channel not found.');
-//         return;
-//     }
-//     constructImageAndSend(member.user, channel, 'Goodbye', 'We\'ll miss you 😥');
-// }
 
 
 async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagline = "Have a great journey!") {
@@ -209,21 +185,24 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
 function roleManager(member, theRole, addRole = true, isId = false) {
 
     let role = theRole;
+    let memberHasRole = false;
     if (!isId) {
         role = member.guild.roles.cache.find(role => role.name == theRole);
     }
+    if (member.roles.cache.some(rol => rol.name === role.name)) {
+        memberHasRole = true;
+        console.log(`"${member.nickname} "already has role "${role.name}"`);
+        if (addRole) return;
+    }
     // addRole true means add.
     if (addRole) {
-        console.log("Need to add role");
         if (role) {
-            console.log(member);
             member.roles.add(role);
-            console.log("Successfully added role");
+            console.log(`Successfully added "${role.name ? role.name : role}" to "${member.nickname}"`);
         }
-    } else {
-        console.log("Need to remove role");
+    } else if (memberHasRole) {
         let check = member.roles.remove([role]);
-        if (check) console.log(`Successfully removed ${theRole} form ${member.user.username}`);
+        if (check) console.log(`Successfully removed "${role.name ? role.name : role}" form ${member.nickname}`);
     }
 }
 
