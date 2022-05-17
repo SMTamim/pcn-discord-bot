@@ -5,11 +5,10 @@ const { roleManager } = require("../helperFunctions");
 module.exports = {
     name: 'messageReactionAdd',
     async execute(reaction, user) {
-        console.log(reaction.users.users);
         const member = await reaction.message.guild.members.fetch(user.id);
 
         if (reaction.emoji.name === 'pcn') {
-            roleManager(member, '"Select Your Roles"', false);
+            roleManager(member, 'Select Your Roles', false);
             return;
         }
         // When a reaction is received, check if the structure is partial

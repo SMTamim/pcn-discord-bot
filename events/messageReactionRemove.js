@@ -24,9 +24,10 @@ module.exports = {
             return;
         };
         const member = await reaction.message.guild.members.fetch(user.id);
+
         roleManager(member, reaction1.role, false, true);
         // Now the message has been cached and is fully available
-        console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a ${reaction.emoji.name} reaction!`);
+        console.log(`${reaction.message.author.username}'s message "${reaction.message.content}" lost a ${reaction.emoji.name} reaction!`);
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
     }

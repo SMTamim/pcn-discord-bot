@@ -183,14 +183,17 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
 
 // Adding a role while joining the server
 function roleManager(member, theRole, addRole = true, isId = false) {
-
     let role = theRole;
     let memberHasRole = false;
+
     if (!isId) {
         role = member.guild.roles.cache.find(role => role.name == theRole);
+        role = role.id;
+        console.log("Role", role);
     }
-    if (member.roles.cache.some(rol => rol.name === role.name)) {
+    if (member.roles.cache.some(rol => rol.id === role)) {
         memberHasRole = true;
+        console.log(addRole, memberHasRole, isId);
         console.log(`"${member.nickname} "already has role "${role.name}"`);
         if (addRole) return;
     }
