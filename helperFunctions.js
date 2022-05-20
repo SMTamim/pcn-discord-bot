@@ -10,9 +10,15 @@ function sendMessage(msgObj, message) {
         .catch(err => console.err);
 }
 
+function deleteMessage(msgObj) {
+    msgObj.delete();
+}
+
 function messageHandler(message) {
     if (message.content.toLowerCase() === 'hello') {
         sendMessage(message, `Hi @${message.author.username}`);
+    }else if(message.content.toLowerCase() === 'invite'){
+        message.reply(`The public invitation link for this server is https://discord.gg/rpudFRTBJj`).then(msg => setTimeout(() => msg.delete(), 5000));
     } else if (message.content.toLowerCase() === 'how are you?') {
         message.react('❤️');
         sendMessage(message, "I'm good! What about you?");
