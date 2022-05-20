@@ -1,7 +1,10 @@
 const section = require("../assets/rules/section.json");
 const semester = require("../assets/rules/semester.json");
+const department = require("../assets/rules/department.json");
+const MessageIds = require("../assets/jsonDB/messageIdDB.json");
 const sectionRoles = require("../assets/jsonDB/sectionRolesDB.json");
 const semesterRoles = require("../assets/jsonDB/semesterRolesDB.json");
+const departmentRoles = require("../assets/jsonDB/departmentRolesDB.json");
 const { roleManager } = require("../helperFunctions");
 
 module.exports = {
@@ -9,7 +12,7 @@ module.exports = {
     async execute(reaction, user) {
         const member = await reaction.message.guild.members.fetch(user.id);
 
-        if (reaction.emoji.name === 'pcn' && reaction.message.id === "975527525822369792") {
+        if (reaction.emoji.name === 'pcn' && reaction.message.id === MessageIds.SaveRoles) {
             roleManager(member, 'Select Your Roles', false);
             return;
         }
@@ -25,11 +28,19 @@ module.exports = {
             }
         }
         const channel_id = reaction.message.channel.id;
-        const reaction1 = semester[reaction.emoji.name] ? semester[reaction.emoji.name] : section[reaction.emoji.name];
+        let reaction1;
+        if(reaction.message.id === MessageIds.Semester){
+            reaction1 = semester[reaction.emoji.name];
+        }else if(reaction.message.id === MessageIds.Section){
+            reaction1 = section[reaction.emoji.name];
+        }else if(reaction.message.id === MessageIds.Department){
+            reaction1 = department[reaction.emoji.name];
+        }
         if (!reaction1) {
             console.log("Reaction Doesn't match any!")
             return;
         }
+        //Checking if channel and message id are okay or not
         if (reaction1.channel !== channel_id || reaction1.message !== reaction.message.id) {
             console.log("Invalid Channel or Unknown Message!");
             return;
@@ -42,9 +53,15 @@ module.exports = {
                 roleManager(member,role.role,false,true);
                 console.log(role.role);
             });
-        }else{
+        }else if(reaction1 === section[reaction.emoji.name]){
             const allSec = sectionRoles.Sections;
             allSec.forEach(role => {
+                roleManager(member,role.role,false, true);
+                console.log(role.role);
+            });
+        }else if(reaction1 === department[reaction.emoji.name]){
+            const allDept = departmentRoles.Departments;
+            allDept.forEach(role => {
                 roleManager(member,role.role,false, true);
                 console.log(role.role);
             });

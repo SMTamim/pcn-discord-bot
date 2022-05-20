@@ -21,7 +21,10 @@ module.exports = {
             return
         }
         const channel = interaction.options.get('channel').value.replace(/<#|>/gm, '');
-        const message = interaction.options.get('message').value;
+        let message = interaction.options.get('message').value;
+        let msg = message.split('\\n');
+        message = "";
+        msg.map(x => {message += x.trim() + '\n';});
         console.log(channel, message);
         interaction.guild.channels.cache.get(channel).send(message);
         interaction.reply({ content: 'sent your message', ephemeral: true });

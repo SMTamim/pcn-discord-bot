@@ -1,5 +1,7 @@
 const section = require("../assets/rules/section.json");
 const semester = require("../assets/rules/semester.json");
+const department = require("../assets/rules/department.json");
+const MessageIds = require("../assets/jsonDB/messageIdDB.json");
 const { roleManager } = require("../helperFunctions");
 
 module.exports = {
@@ -17,7 +19,14 @@ module.exports = {
             }
         }
         const channel_id = reaction.message.channel.id;
-        const reaction1 = semester[reaction.emoji.name] ? semester[reaction.emoji.name] : section[reaction.emoji.name];
+        let reaction1;
+        if(reaction.message.id === MessageIds.Semester){
+            reaction1 = semester[reaction.emoji.name];
+        }else if(reaction.message.id === MessageIds.Section){
+            reaction1 = section[reaction.emoji.name];
+        }else if(reaction.message.id === MessageIds.Department){
+            reaction1 = department[reaction.emoji.name];
+        }
         if (!reaction1) return;
         if (reaction1.channel !== channel_id || reaction1.message !== reaction.message.id) {
             console.log("Invalid Channel or Unknown Message!");
