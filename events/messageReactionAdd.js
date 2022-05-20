@@ -36,11 +36,19 @@ module.exports = {
         };
         //Remove all other semester or section roles
 
-        // if(reaction1 === semester[reaction.emoji.name]) {
-        //     console.log(`${semesterRoles[Semesters]}`);
-        // }else{
-        //     console.log(`${sectionRoles[Sections]}`);
-        // }
+        if(reaction1 === semester[reaction.emoji.name]) {
+            const allSem = semesterRoles.Semesters;
+            allSem.forEach(role => {
+                roleManager(member,role.role,false,true);
+                console.log(role.role);
+            });
+        }else{
+            const allSec = sectionRoles.Sections;
+            allSec.forEach(role => {
+                roleManager(member,role.role,false, true);
+                console.log(role.role);
+            });
+        }
 
         roleManager(member, reaction1.role, true, true);
         // Now the message has been cached and is fully available
