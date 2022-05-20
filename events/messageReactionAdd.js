@@ -1,5 +1,7 @@
 const section = require("../assets/rules/section.json");
 const semester = require("../assets/rules/semester.json");
+const sectionRoles = require("../assets/jsonDB/sectionRolesDB.json");
+const semesterRoles = require("../assets/jsonDB/semesterRolesDB.json");
 const { roleManager } = require("../helperFunctions");
 
 module.exports = {
@@ -7,7 +9,7 @@ module.exports = {
     async execute(reaction, user) {
         const member = await reaction.message.guild.members.fetch(user.id);
 
-        if (reaction.emoji.name === 'pcn') {
+        if (reaction.emoji.name === 'pcn' && reaction.message.id === "975527525822369792") {
             roleManager(member, 'Select Your Roles', false);
             return;
         }
@@ -32,6 +34,14 @@ module.exports = {
             console.log("Invalid Channel or Unknown Message!");
             return;
         };
+        //Remove all other semester or section roles
+
+        // if(reaction1 === semester[reaction.emoji.name]) {
+        //     console.log(`${semesterRoles[Semesters]}`);
+        // }else{
+        //     console.log(`${sectionRoles[Sections]}`);
+        // }
+
         roleManager(member, reaction1.role, true, true);
         // Now the message has been cached and is fully available
         console.log(`\n${reaction.message.author.username}'s message "${reaction.message.content}" gained a ${reaction.emoji.name} reaction!\n`);
