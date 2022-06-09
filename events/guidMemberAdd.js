@@ -3,7 +3,7 @@ const { roleManager, constructImageAndSend } = require('../helperFunctions');
 module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
-        const channel = member.guild.channels.cache.find(channel => channel.name === 'welcome-and-goodbyes');
+        const channel = member.guild.channels.cache.find(channel => channel.id === '965667610903597139');
         if (!channel) {
             console.log('Channel not found.');
             return;

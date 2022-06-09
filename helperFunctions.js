@@ -2,7 +2,7 @@ const { MessageAttachment } = require('discord.js');
 const fs = require('fs');
 const { registerFont, createCanvas, loadImage } = require('canvas');
 
-const colors = ['#00FFFF', '#FF00FF', '#fff', '#FFFF00', '#00FF00', '#FFA500',];
+const colors = ['#00FFFF', '#FF00FF', '#fff', '#FFFF00', '#00FF00', '#FFA500'];
 
 function sendMessage(msgObj, message) {
     msgObj.reply(message)
@@ -14,11 +14,31 @@ function deleteMessage(msgObj) {
     msgObj.delete();
 }
 
+function sendMessageNotReply(messageObj, content){
+    messageObj.channel.send(content);
+}
+
 function messageHandler(message) {
-    if (message.content.toLowerCase() === 'hello') {
+    if(message.channel.id === "980787684391915520"){
+        if(message.content === 'printf("contestant");'){
+            const user = message.member;
+            sendMessageNotReply(message, `Okay <@${message.author.id}>,\nI believe that. You are added to the Contestant team successfully.`);
+            deleteMessage(message);
+            roleManager(user, "974722363386122280", true, true);
+        }
+        else if(message.content.toLowerCase() === 'printf("contestant");'){
+            sendMessage(message, `There is slight error your in your code. Do you remember that **C** is a *case sensitive* language?`);
+        }
+        else if(message.content.toLowerCase() === 'printf("contestant")'){
+            sendMessage(message, `Oops!!, There is a syntax error in your code. I doubt if you are a true contestant or not 😕`);
+        }
+        else{
+            sendMessage(message, `⛔ Please don't send random text here.`)
+        }
+    }else if (message.content.toLowerCase() === 'hello') {
         sendMessage(message, `Hi @${message.author.username}`);
     }else if(message.content.toLowerCase() === 'invite'){
-        message.reply(`The public invitation link for this server is https://discord.gg/rpudFRTBJj`).then(msg => setTimeout(() => msg.delete(), 5000));
+        message.reply(`The public invitation link for this server is https://discord.gg/rpudFRTBJj`).then(msg => setTimeout(() => msg.delete(), 25000));
     } else if (message.content.toLowerCase() === 'how are you?') {
         message.react('❤️');
         sendMessage(message, "I'm good! What about you?");
@@ -177,7 +197,7 @@ async function constructImageAndSend(memberObj, channel, upper = "Welcome", tagl
                 let message = `Huh! ${username} has just left us`;
 
                 if (upper.toLowerCase() == 'welcome')
-                    message = `For detailed guide visit <#974719552929796108>.`;
+                    message = `Welcome <@${memberObj.id}>,\nFor detailed guide please visit <#974719552929796108> and follow.`;
 
                 channel.send({ files: [attachments], content: message });
                 return true;

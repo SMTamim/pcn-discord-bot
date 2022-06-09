@@ -2,9 +2,9 @@ const section = require("../assets/rules/section.json");
 const semester = require("../assets/rules/semester.json");
 const department = require("../assets/rules/department.json");
 const MessageIds = require("../assets/jsonDB/messageIdDB.json");
-const sectionRoles = require("../assets/jsonDB/sectionRolesDB.json");
+const sectionRoles = require("../assets/jsonDB/SectionRolesDB.json");
 const semesterRoles = require("../assets/jsonDB/semesterRolesDB.json");
-const departmentRoles = require("../assets/jsonDB/departmentRolesDB.json");
+const departmentRoles = require("../assets/jsonDB/DepartmentRolesDB.json");
 const { roleManager } = require("../helperFunctions");
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     async execute(reaction, user) {
         const member = await reaction.message.guild.members.fetch(user.id);
 
-        if (reaction.emoji.name === 'pcn' && reaction.message.id === MessageIds.SaveRoles) {
+        if (reaction.emoji.name === 'pcn_square' && reaction.message.id === MessageIds.SaveRoles) {
             roleManager(member, 'Select Your Roles', false);
             return;
         }
