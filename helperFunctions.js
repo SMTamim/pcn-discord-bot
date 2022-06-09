@@ -14,30 +14,35 @@ function deleteMessage(msgObj) {
     msgObj.delete();
 }
 
-function sendMessageNotReply(messageObj, content){
+function sendMessageNotReply(messageObj, content) {
     messageObj.channel.send(content);
 }
 
 function messageHandler(message) {
-    if(message.channel.id === "980787684391915520"){
-        if(message.content === 'printf("contestant");'){
+    if (message.channel.id === "980787684391915520") {
+        if (message.content === 'printf("contestant");') {
             const user = message.member;
             sendMessageNotReply(message, `Okay <@${message.author.id}>,\nI believe that. You are added to the Contestant team successfully.`);
             deleteMessage(message);
             roleManager(user, "974722363386122280", true, true);
         }
-        else if(message.content.toLowerCase() === 'printf("contestant");'){
+        else if (message.content.toLowerCase() === 'printf("contestant");') {
             sendMessage(message, `There is slight error your in your code. Do you remember that **C** is a *case sensitive* language?`);
         }
-        else if(message.content.toLowerCase() === 'printf("contestant")'){
+        else if (message.content.toLowerCase() === 'printf("contestant")') {
             sendMessage(message, `Oops!!, There is a syntax error in your code. I doubt if you are a true contestant or not 😕`);
         }
-        else{
-            sendMessage(message, `⛔ Please don't send random text here.`)
+        else {
+            const regex = /\{|\}/g
+            if (message.content.match(regex)) {
+                sendMessage(message, 'Please read this message more carefully to become a contestant! \nMessage Link: https://discord.com/channels/965667610903597136/974719552929796108/980830360633999410 ')
+                return;
+            }
+            else sendMessage(message, `⛔ Please don't send random text here.`)
         }
-    }else if (message.content.toLowerCase() === 'hello') {
+    } else if (message.content.toLowerCase() === 'hello') {
         sendMessage(message, `Hi @${message.author.username}`);
-    }else if(message.content.toLowerCase() === 'invite'){
+    } else if (message.content.toLowerCase() === 'invite') {
         message.reply(`The public invitation link for this server is https://discord.gg/rpudFRTBJj`).then(msg => setTimeout(() => msg.delete(), 25000));
     } else if (message.content.toLowerCase() === 'how are you?') {
         message.react('❤️');

@@ -1,6 +1,7 @@
 
+require('dotenv').config();
+
 module.exports = client => {
-    
     const channelId = "977875081378275358";
 
 
@@ -15,7 +16,7 @@ module.exports = client => {
     client.on('guildMemberAdd', (member) => updateMember(member.guild));
     client.on('guildMemberRemove', (member) => updateMember(member.guild));
 
-    const guild = client.guilds.cache.get(process.env.guildId);
+    const guild = client.guilds.cache.get(process.env.GUILD_ID);
     updateMember(guild);
 
 }

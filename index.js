@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Intents, Collection, Permissions } = require('discord.js');
-// const { token, guildId, clientId } = require('./config.json');
+require('dotenv').config();
 const helpers = require('./helperFunctions.js');
 
 const client = new Client({
@@ -35,4 +35,3 @@ for (const file of eventFiles) {
 }
 
 client.login(process.env.DS_BOT_TOKEN);
-// client.login(token);
